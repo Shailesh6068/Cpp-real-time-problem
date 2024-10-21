@@ -1,7 +1,5 @@
-#include <iostream>
-#include <stack>
+#include<iostream>
 using namespace std;
-
 class node {
 public:
     node *next;
@@ -64,12 +62,14 @@ class Financial_data {
 public:
     node *front;
     node *tail;
+    node *top;
     static int size;
 
     Financial_data() {
         front = nullptr;
         tail = nullptr;
         size = 0; // Initialize size to 0
+        top=nullptr;
     }
 
     void is_empty() {
@@ -104,7 +104,14 @@ public:
             tail = nullptr; // If the list becomes empty, update tail
         }
         cout << "Payment of Rs. " << temp->amount << " for " << temp->cato << " has been successfully processed!\n";
-        delete temp;
+        temp->next = nullptr;
+        if(top==nullptr){
+            top = temp;
+        }else{
+            temp->next = top;
+            top = temp;
+        }
+        free(temp);
         size--;
     }
 
@@ -142,18 +149,73 @@ public:
     void pending_payment() {
         node *temp = front;
         cout << "--------------------------------------------------------------------" << endl;
-        cout << "               *****    Payment Queue Status    *****               " << endl;
+        cout << "               *****    Pending Payment Status    *****               " << endl;
         cout << "--------------------------------------------------------------------" << endl;
 
         if (size == 0) {
             cout << "                      || No pending payments ||                     " << endl;
             return;
         }
-        
+       
         while (temp != nullptr) {
             temp->display();
             temp = temp->next;
         }
+    }
+    void paid_payment() {
+        node *temp = top;
+        cout << "--------------------------------------------------------------------" << endl;
+        cout << "               *****    Paid Payment Status    *****               " << endl;
+        cout << "--------------------------------------------------------------------" << endl;
+
+        if (temp==nullptr) {
+            cout << "                      || No paid payments ||                     " << endl;
+            return;
+        }
+       
+        while (temp != nullptr) {
+            temp->display();
+            temp = temp->next;
+        }
+    }
+    void pop_payment(){
+        if(top==nullptr){
+            cout<<"You don't have any recent payment history at the moment."<<endl;
+            return;
+        }
+        node *temp = top;
+        top = top->next;
+        delete temp;
+        cout<<"Your recent payment history has been deleted."<<endl;
+        return;
+    }
+    void pending_funds(){
+        if(front == nullptr){
+            cout<<"You don't have any pending payments at the moment."<<endl;
+            return;
+        }
+        node *temp=front;
+        int count = 0;
+        while(temp!=nullptr){
+           count += temp->amount;
+           temp = temp->next;
+        }
+        cout<<"You have ₹"<<count<<" in pending payments. Please complete your payments to avoid delays."<<endl;
+        return;
+    }
+   
+    void paid_funds(){
+        if(top == nullptr){
+            cout<<"You haven't made any payments yet."<<endl;
+            return;
+        }
+        node *temp=top;
+        int count = 0;
+        while(temp!=nullptr){
+           count += temp->amount;
+           temp = temp->next;
+        }
+        cout << "You have paid ₹" << count << " till now." << endl;
     }
 };
 int Financial_data::size = 0;
@@ -162,10 +224,13 @@ int main() {
     Financial_data fd;
     cout << "The Choices are:" << endl;
     cout << "1: Add Payment." << endl
-         << "2: Check whether the payments are present or not." << endl
+         << "2: Process Payment." << endl
          << "3: View Pending Payments." << endl
-         << "4: Process Payment." << endl
-         << "5: Exit." << endl;
+         << "4: View Paid Payments." << endl
+         << "5: Delete recent history." << endl
+         << "6: Check your pending payments." << endl
+         << "7: Check your paid payments." << endl
+         << "8: Exit." << endl;
 
     while (true) {
         cout << "\nEnter the choice: ";
@@ -175,15 +240,25 @@ int main() {
             fd.Addpayment_queue();
             break;
         case 2:
-            fd.is_empty();
+            fd.process_payment();
             break;
         case 3:
             fd.pending_payment();
             break;
         case 4:
-            fd.process_payment();
-            break; // Added break to avoid fall-through
+            fd.paid_payment();
+            break; 
         case 5:
+            fd.pop_payment();
+            break;
+        case 6:
+            fd.pending_funds();
+            break;
+        case 7:
+            fd.paid_funds();
+            break;
+        case 8:
+            cout<<"Exiting...";
             exit(0);
         default:
             cout << "Incorrect Choice...!\n";
