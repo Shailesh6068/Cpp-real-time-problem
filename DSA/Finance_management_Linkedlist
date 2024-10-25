@@ -1,5 +1,7 @@
-#include<iostream>
+#include <iostream>
+#include <stack>
 using namespace std;
+
 class node {
 public:
     node *next;
@@ -35,15 +37,15 @@ public:
             break;
         default:
             cout << "Incorrect Choice..." << endl;
-            paymethod(); // Re-prompt for choice
+            paymethod(); 
             break;
         }
     }
 
     void read() {
-        cout << "\nSelect the payment method (e.g. Cash, Credit/Debit card, Online):\n";
+        cout << "\nSelect the payment method (e.g.Cash,Online,Credit Card,Debit Card ):\n";
         paymethod();
-        cout << "Enter the type of transaction (e.g. Electricity, Grocery): ";
+        cout << "Enter the type of transaction : ";
         cin.ignore();
         getline(cin, cato);
         cout << "Enter the amount (Rs.): ";
@@ -111,7 +113,6 @@ public:
             temp->next = top;
             top = temp;
         }
-        free(temp);
         size--;
     }
 
@@ -149,7 +150,7 @@ public:
     void pending_payment() {
         node *temp = front;
         cout << "--------------------------------------------------------------------" << endl;
-        cout << "               *****    Pending Payment Status    *****               " << endl;
+        cout << "               *****    Payment Queue Status    *****               " << endl;
         cout << "--------------------------------------------------------------------" << endl;
 
         if (size == 0) {
@@ -165,7 +166,7 @@ public:
     void paid_payment() {
         node *temp = top;
         cout << "--------------------------------------------------------------------" << endl;
-        cout << "               *****    Paid Payment Status    *****               " << endl;
+        cout << "               *****    Payment Stack Status    *****               " << endl;
         cout << "--------------------------------------------------------------------" << endl;
 
         if (temp==nullptr) {
@@ -173,25 +174,22 @@ public:
             return;
         }
        
-        while (temp != nullptr) {
-            temp->display();
-            temp = temp->next;
-        }
+        temp->display();
     }
     void pop_payment(){
         if(top==nullptr){
-            cout<<"You don't have any recent payment history at the moment."<<endl;
+            cout<<"You don't have any recent payment history at the moment.\n";
             return;
         }
         node *temp = top;
         top = top->next;
         delete temp;
-        cout<<"Your recent payment history has been deleted."<<endl;
+        cout<<"Your recent payment history has been deleted.\n";
         return;
     }
     void pending_funds(){
         if(front == nullptr){
-            cout<<"You don't have any pending payments at the moment."<<endl;
+            cout<<"You don't have any pending payments at the moment.\n";
             return;
         }
         node *temp=front;
@@ -200,13 +198,13 @@ public:
            count += temp->amount;
            temp = temp->next;
         }
-        cout<<"You have ₹"<<count<<" in pending payments. Please complete your payments to avoid delays."<<endl;
+        cout<<"You have ₹"<<count<<" Please complete your payments to avoid delays.\n";
         return;
     }
    
     void paid_funds(){
         if(top == nullptr){
-            cout<<"You haven't made any payments yet."<<endl;
+            cout<<"You Not Paid Any Payment.\n";
             return;
         }
         node *temp=top;
@@ -215,18 +213,18 @@ public:
            count += temp->amount;
            temp = temp->next;
         }
-        cout << "You have paid ₹" << count << " till now." << endl;
+        cout << "You have paid ₹" << count << " till now.\n" ;
     }
 };
 int Financial_data::size = 0;
 int main() {
     int n;
     Financial_data fd;
-    cout << "The Choices are:" << endl;
-    cout << "1: Add Payment." << endl
-         << "2: Process Payment." << endl
-         << "3: View Pending Payments." << endl
-         << "4: View Paid Payments." << endl
+    cout << "The Choices are:"<<endl;
+    cout << "1: Add Payment." <<endl 
+          <<"2: Process Payment." <<endl
+         << "3: View Pending Payments." <<endl
+         << "4: View recent Paid Payment." <<endl
          << "5: Delete recent history." << endl
          << "6: Check your pending payments." << endl
          << "7: Check your paid payments." << endl
@@ -247,7 +245,7 @@ int main() {
             break;
         case 4:
             fd.paid_payment();
-            break; 
+            break; // Added break to avoid fall-through
         case 5:
             fd.pop_payment();
             break;
